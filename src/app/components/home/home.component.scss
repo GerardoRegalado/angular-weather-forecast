@@ -4,8 +4,30 @@
   display: flex;
   background-color: #22272D;
   border-radius: 1vw;
+  align-items: baseline;
+  justify-content: center;
 }
 
-div {
-  color: white;
+.header-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 3%;
+  padding: 0 0 0 3vw;
+}
+
+.header-text {
+  color: #E8EAED;
+  margin: 0 0 0 1vw;
+  font-size: large;
+}
+
+.location {
+  color: #E8EAED;
+  font-size: 3rem;
+  margin: 0;
+}
+
+.options {
+  width: 25%;
 }

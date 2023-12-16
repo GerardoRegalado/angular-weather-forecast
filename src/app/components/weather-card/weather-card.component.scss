@@ -1,0 +1,60 @@
+.card {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 1vw;
+  padding: 10px; // Añadir algo de padding para un mejor aspecto
+}
+
+.icon {
+  width: 5vw;
+  height: 5vh;
+  display: flex;
+  align-items: center;
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.weather-info {
+  display: flex;
+  align-items: center; // Alinear horizontalmente los elementos
+  .temperature {
+    font-size: 3rem; // Ajusta el tamaño a tu preferencia
+    margin: 0 10px; // Espacio entre la imagen y el texto
+  }
+  .units {
+    font-size: 1.5rem; // Más pequeño y como si estuviera elevado
+    vertical-align: super; // Alineación para simular elevación
+  }
+}
+
+.city-info {
+  text-align: right; // Alinea el texto a la derecha
+  position: absolute; // Posiciona absolutamente dentro de la tarjeta
+  top: 5%; // Ajusta según sea necesario
+  right: 5%; // Ajusta según sea necesario
+  .card-title {
+    margin-bottom: 0; // Reduce el margen si es necesario
+  }
+  .card-text {
+    margin: 0;
+  }
+}
+
+.city-details {
+  margin-top: 0.5vw;
+  margin-left: 0.5vw;
+  .details {
+    font-size: 0.7rem; // Tamaño de letra pequeño
+    margin-top: 2px; // Margen pequeño en la parte superior para cada detalle
+    margin-bottom: 2px; // Margen pequeño en la parte inferior para cada detalle
+
+    &:first-child {
+      margin-top: 0; // Elimina el margen superior del primer elemento
+    }
+
+    &:last-child {
+      margin-bottom: 0; // Elimina el margen inferior del último elemento
+    }
+  }
+}

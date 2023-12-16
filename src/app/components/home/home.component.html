@@ -1,16 +1,14 @@
 <section class="home-container">
-  <div class="header-container">
-    <p class="header-text">Weather in</p>
-    <div class="dropdown">
-      <a class="btn dropdown-toggle location" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Location
-      </a>
-
-      <ul class="dropdown-menu options" data-bs-theme="dark" >
-        <li><a class="dropdown-item" href="#">Your current location</a></li>
-        <li><a class="dropdown-item" href="#">City one</a></li>
-        <li><a class="dropdown-item" href="#">city two</a></li>
-      </ul>
+    <div class="header-container">
+      <h1 class="header-text">Weather Forecast</h1>
     </div>
-  </div>
 </section>
+
+<section class="cards-container">
+    <div class="row">
+        <div class="col-md-6" *ngFor="let city of cities">
+          <awf-weather-card [cityName]="city.name" [weatherData]="city.data"></awf-weather-card>
+        </div>
+      </div>
+</section>
+

@@ -1,4 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,300;0,600;1,500&display=swap');
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+
 html {
-    background-image: radial-gradient(circle at 17.91% 31.47%, #beffff 0, #87dcff 25%, #3cb5f2 50%, #0090d6 75%, #006fbd 100%);
+    font-family: 'Montserrat', 'Times New Roman', Times, serif;
+}
+
+body {
+  background-image: radial-gradient(circle at 17.91% 31.47%, #beffff 0, #87dcff 25%, #3cb5f2 50%, #0090d6 75%, #006fbd 100%);
 }

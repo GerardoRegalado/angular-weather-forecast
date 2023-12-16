@@ -14,7 +14,7 @@ import { WeatherComponent } from './components/weather/weather.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
   providers: [
     provideClientHydration()

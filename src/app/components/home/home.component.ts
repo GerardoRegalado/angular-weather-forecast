@@ -15,10 +15,11 @@ export class HomeComponent implements OnInit {
 
   constructor(public weatherService: WeatherAPIService){}
   ngOnInit(): void {
-    this.cities.forEach(city => {
+    this.cities = this.cities.map(city => {
       this.weatherService.getWeatherData(city.endpoint).subscribe(data => {
         city.data = data;
       });
+      return city;
     });
   }
 }

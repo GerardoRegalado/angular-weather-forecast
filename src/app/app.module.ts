@@ -7,6 +7,8 @@ import { HomeComponent } from './components/home/home.component';
 import { WeatherComponent } from './components/weather/weather.component';
 import { WeatherCardComponent } from './components/weather-card/weather-card.component';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { NgChartsModule } from 'ng2-charts';
+
 
 @NgModule({
   declarations: [
@@ -18,6 +20,7 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    NgChartsModule,
   ],
   providers: [
     provideClientHydration(),

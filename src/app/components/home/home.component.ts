@@ -12,6 +12,7 @@ export class HomeComponent implements OnInit {
     { name: 'Kansas', endpoint: 'TOP', data: {}, forecast: []},
     { name: 'District of Columbia', endpoint: 'LWX', data: {}, forecast: []}
   ];
+
   constructor(public weatherService: WeatherAPIService){}
   ngOnInit(): void {
     this.cities.forEach(city => {
@@ -20,7 +21,4 @@ export class HomeComponent implements OnInit {
       });
     });
   }
-
-
-
 }

@@ -58,3 +58,23 @@
     }
   }
 }
+
+.canvas-container {
+    height: 35vh;
+    width: 100%;
+    position: relative;
+    margin: 1vw 0 0 0;
+  .canvas-title {
+    font-size: 1rem;
+    font-weight: 300;
+  }
+}
+
+button {
+  background-color: #2F689A;
+  border-color: #2F689A;
+}
+
+button:hover {
+  background-color: #19466e;
+}

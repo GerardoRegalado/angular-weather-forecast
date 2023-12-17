@@ -18,6 +18,14 @@
       <p class="details"> Wind Direction: {{ windDirection }}</p>
       <p class="details"> Humidity: {{ relativeHumidity?.value }}%</p>
     </div>
+    <div class="canvas-container">
+      <p class="canvas-title">Weekly Forecast</p>
+      <canvas baseChart [options]="lineChartOptions" [type]="lineChartType" [data]="lineChartData"></canvas>
+    </div>
   </div>
-    <a href="#" class="card-link">See more...</a>
+    <!-- <a href="#" class="card-link">See more...</a> -->
+    <div class="d-grid gap-2">
+      <button class="btn btn-primary" type="button" (click)="navigateToWeather()">More details...</button>
+    </div>
 </div>
+

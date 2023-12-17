@@ -1,1 +1,32 @@
-<p>weather works!</p>
+<section class="container-section">
+    <div class="top-section">
+      <button class="btn btn-primary" type="button" (click)="navigateToCards()">Back to Home</button>
+    </div>
+    <div class="title-container">
+        <h1 class="header-text">{{ title }}</h1>
+        <p class="sForecast">{{today.shortForecast}}</p>
+
+    </div>
+    <div class="card-body">
+      <div class="weather-info">
+        <p class="temperature">{{ today.temperature }}</p>
+        <p class="units">° {{ today.temperatureUnit }}</p>
+      </div>
+    <div class="container text-center">
+      <div class="row">
+        <div class="col-4 detail">
+          <p>Wind: {{today.windSpeed}} {{today.windDirection}}</p>
+        </div>
+        <div class="col-4 detail">
+          <p>Humidity: {{today.relativeHumidity.value}}%</p>
+        </div>
+        <div class="col-4 detail">
+          <p>Dewpoint: {{today.dewpoint.value}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="canvas-container">
+      <canvas baseChart [options]="lineChartOptions" [type]="lineChartType" [data]="lineChartData"></canvas>
+    </div>
+  </div>
+</section>

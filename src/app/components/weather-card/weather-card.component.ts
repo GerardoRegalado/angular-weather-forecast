@@ -135,7 +135,9 @@ export class WeatherCardComponent {
 
   public setupChartData() {
     this.combinedTemperatures =this.organizeTemperatures();
+    console.log(this.combinedTemperatures)
     this.labels = this.combinedTemperatures.slice(0, 5).map(item => item.day);
+    console.log(this.labels)
     const dayTemperatures = this.combinedTemperatures.slice(0, 5).map(item => item.temperatures[0]);
     const nightTemperatures = this.combinedTemperatures.slice(0, 5).map(item => item.temperatures[1]);
     this.drawChart(dayTemperatures, nightTemperatures)
@@ -146,7 +148,10 @@ export class WeatherCardComponent {
     const combinedTemperatures = [];
       for (let i = 0; i < this.weatherData.properties.periods.length; i += 2) {
         const dayTemp = this.weatherData.properties.periods[i];
+        console.log(dayTemp.name)
         const nightTemp = this.weatherData.properties.periods[i + 1];
+        console.log(nightTemp.name)
+
   combinedTemperatures.push({
     day: dayTemp.name,
     temperatures: [dayTemp.temperature, nightTemp.temperature]

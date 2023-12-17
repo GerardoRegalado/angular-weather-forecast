@@ -7,7 +7,7 @@
 <section class="cards-container">
     <div class="row">
         <div class="col-md-6" *ngFor="let city of cities">
-          <awf-weather-card [cityName]="city.name" [weatherData]="city.data"></awf-weather-card>
+          <awf-weather-card [cityName]="city.name" [endpoint]="city.endpoint" [weatherData]="city.data"></awf-weather-card>
         </div>
       </div>
 </section>

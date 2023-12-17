@@ -19,7 +19,6 @@ export class HomeComponent implements OnInit {
         city.data = data;
       });
     });
-    console.log(this.cities.forEach(city => console.log(city.data)))
   }
 
 

@@ -2,6 +2,10 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.4.
 
+<img width="500" alt="Captura de pantalla 2023-12-16 a la(s) 17 44 27" src="https://github.com/GerardoRegalado/angular-weather-forecast/assets/97474369/3d0f78d3-0d4a-401b-b844-a6fab06e19f1">
+
+<img width="500" alt="Captura de pantalla 2023-12-16 a la(s) 18 09 00" src="https://github.com/GerardoRegalado/angular-weather-forecast/assets/97474369/51be7d40-7278-443d-b9a8-a9089b615df6">
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.

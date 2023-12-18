@@ -1,29 +1,31 @@
+<!-- Card -->
 <div class="card" style="width: 100%;height: 100%;">
   <div class="card-body">
     <div class="weather-info">
       <div class="icon">
-        <img src="assets/moon.png" *ngIf="!isDayTime" alt="moon">
-        <img src="assets/sun.png" *ngIf="isDayTime" alt="sun">
+        <img src="assets/moon.png" *ngIf="!todayForecast.isDaytime" alt="moon">
+        <img src="assets/sun.png" *ngIf="todayForecast.isDaytime" alt="sun">
       </div>
-      <p class="temperature">{{ todayTmp }}</p>
-      <p class="units">° {{ tmpUnits }}</p>
+      <p class="temperature">{{ todayForecast.temperature }}</p>
+      <p class="units">° {{ todayForecast.temperatureUnit }}</p>
     </div>
     <div class="city-info">
       <h5 class="card-title">{{ cityName }}</h5>
-      <p class="card-text">{{ shortForecast }}</p>
-      <p class="card-text"> {{ name }}</p>
+      <p class="card-text">{{ todayForecast.shortForecast }}</p>
+      <p class="card-text"> {{ todayForecast.name }}</p>
     </div>
     <div class="city-details">
-      <p class="details">Wind speed: {{ windSpeed }}</p>
-      <p class="details"> Wind Direction: {{ windDirection }}</p>
-      <p class="details"> Humidity: {{ relativeHumidity?.value }}%</p>
+      <p class="details">Wind speed: {{ todayForecast.windSpeed }}</p>
+      <p class="details"> Wind Direction: {{ todayForecast.windDirection }}</p>
+      <p class="details"> Humidity: {{ todayForecast.relativeHumidity.value }}%</p>
     </div>
+<!-- Chart Container -->
     <div class="canvas-container">
       <p class="canvas-title">Weekly Forecast</p>
       <canvas baseChart [options]="lineChartOptions" [type]="lineChartType" [data]="lineChartData"></canvas>
     </div>
   </div>
-    <!-- <a href="#" class="card-link">See more...</a> -->
+<!-- Router Button -->
     <div class="d-grid gap-2">
       <button class="btn btn-primary" type="button" (click)="navigateToWeather()">More details...</button>
     </div>

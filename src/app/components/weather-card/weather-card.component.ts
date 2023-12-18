@@ -1,35 +1,23 @@
-import { Component, Input } from '@angular/core';
-import { ChartConfiguration, ChartData, ChartType, plugins } from 'chart.js';
+import { Component, Input, OnInit } from '@angular/core';
+import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import Chart from 'chart.js/auto';
 import { Router } from '@angular/router';
-
-
+import { Forecast } from '../../classes/forecast';
+import { WeatherData, combinedTemperatures } from '../../classes/weather-data';
 
 @Component({
   selector: 'awf-weather-card',
   templateUrl: './weather-card.component.html',
   styleUrl: './weather-card.component.scss'
 })
-export class WeatherCardComponent {
+export class WeatherCardComponent implements OnInit {
+  @Input() weatherData: WeatherData = new WeatherData(); //* Used to receive the weather data info
+  @Input() cityName: string = ''; //* Used to receive city name
+  @Input() endpoint: string = '' //* Used to receive endpoint
 
-  @Input() weatherData: any;
-  @Input() cityName: string = '';
-  @Input() endpoint: string = ''
-
-  public dailyTpm = 0
-  public todayTmp: any
-  public tmpUnits: any
-  public detailedForecast: any;
-  public shortForecast: any;
-  public windSpeed: any
-  public windDirection: any;
-  public image: any;
-  public isDayTime = true
-  public relativeHumidity: any
-  public name:any
-
-  public combinedTemperatures: { day: any; temperatures: any[]; }[] = []
+  public todayForecast: Forecast = new Forecast() //* Used to save the daily forecast
+  public combinedTemperatures: combinedTemperatures[]= [] //* Used to combine the day and night temperature
 
   public labels: string[] = []; // * Labels for the chart
   public lineChartData: ChartConfiguration['data'] = { datasets: [] }; // * Data that is going to be shown on the charts
@@ -51,6 +39,7 @@ export class WeatherCardComponent {
         color: '#444',
         font : {
           weight: 'normal',
+          size: 8
         }
       }
     },
@@ -81,24 +70,33 @@ export class WeatherCardComponent {
 
   ngOnInit(): void {
     Chart.register(ChartDataLabels)
-    this.initializeValues()
+    this.initializeTodayValues()
     this.setupChartData()
   }
 
-  public initializeValues() {
-    this.todayTmp = this.weatherData.properties?.periods[0].temperature
-    this.tmpUnits = this.weatherData.properties?.periods[0].temperatureUnit
-    this.detailedForecast = this.weatherData.properties?.periods[0].detailedForecast
-    this.shortForecast = this.weatherData.properties?.periods[0].shortForecast
-    this.windSpeed = this.weatherData.properties?.periods[0].windSpeed
-    this.windDirection = this.weatherData.properties?.periods[0].windDirection
-    this.image = this.weatherData.properties?.periods[0].icon
-    this.isDayTime = this.weatherData.properties?.periods[0].isDaytime
-    this.relativeHumidity = this.weatherData.properties?.periods[0].relativeHumidity
-    this.name = this.weatherData.properties?.periods[0].name
+  /**
+   * * Initializes the value of today's forecast by assigning it the first element in the
+   * * weatherData's periods array.
+   */
+  public initializeTodayValues(): void {
+    this.todayForecast = this.weatherData.properties.periods[0]
   }
 
-  public drawChart(dayTemperature:any[], nightTemperature:any[]) {
+/**
+ * * Organizes temperature data, extracts the labels and temperatures for the first 5 days
+ */
+  public setupChartData(): void {
+    this.combinedTemperatures =this.organizeTemperatures();
+    this.labels = this.combinedTemperatures.slice(0, 5).map(item => item.day);
+    const dayTemperatures = this.combinedTemperatures.slice(0, 5).map(item => item.temperatures[0]);
+    const nightTemperatures = this.combinedTemperatures.slice(0, 5).map(item => item.temperatures[1]);
+    this.drawChart(dayTemperatures, nightTemperatures)
+  }
+
+  /**
+   * * Creates a line chart with day and night temperature data.
+   */
+  public drawChart(dayTemperature:any[], nightTemperature:any[]): void {
     this.lineChartData = {
       labels: this.labels,
       datasets: [
@@ -130,36 +128,28 @@ export class WeatherCardComponent {
         }
       }
     } as ChartData
-
   }
 
-  public setupChartData() {
-    this.combinedTemperatures =this.organizeTemperatures();
-    console.log(this.combinedTemperatures)
-    this.labels = this.combinedTemperatures.slice(0, 5).map(item => item.day);
-    console.log(this.labels)
-    const dayTemperatures = this.combinedTemperatures.slice(0, 5).map(item => item.temperatures[0]);
-    const nightTemperatures = this.combinedTemperatures.slice(0, 5).map(item => item.temperatures[1]);
-    this.drawChart(dayTemperatures, nightTemperatures)
-
-  }
-
-  public organizeTemperatures() {
+/**
+ * * Organizes the day and night temperatures from a weather data object into an array of
+ * * combined temperatures.
+ */
+  public organizeTemperatures(): combinedTemperatures[] {
     const combinedTemperatures = [];
       for (let i = 0; i < this.weatherData.properties.periods.length; i += 2) {
         const dayTemp = this.weatherData.properties.periods[i];
-        console.log(dayTemp.name)
         const nightTemp = this.weatherData.properties.periods[i + 1];
-        console.log(nightTemp.name)
-
-  combinedTemperatures.push({
-    day: dayTemp.name,
-    temperatures: [dayTemp.temperature, nightTemp.temperature]
-  });
-}
-return combinedTemperatures
+        combinedTemperatures.push({
+          day: dayTemp.name,
+          temperatures: [dayTemp.temperature, nightTemp.temperature]
+        });
+      }
+    return combinedTemperatures
   }
 
+/**
+ * * Navigates to the weather page with a specified endpoint if it exists.
+ */
   public navigateToWeather(): void {
     if (this.endpoint) {
       this.router.navigate(['/weather', this.endpoint]);

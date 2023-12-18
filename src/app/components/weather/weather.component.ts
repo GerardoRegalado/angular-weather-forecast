@@ -3,6 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { WeatherAPIService } from '../../services/weather-api.service';
 import { Chart, ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { WeatherData, combinedTemperatures } from '../../classes/weather-data';
+import { Forecast } from '../../classes/forecast';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'awf-weather',
@@ -10,14 +13,13 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
   styleUrl: './weather.component.scss'
 })
 export class WeatherComponent implements OnInit {
-  public endpoint: string = '';
-  public title: string = ''
-  public completeForecast: any
-
-  public today: any
-  public combinedTemperatures: { day: any; temperatures: any[]; relativeHumidity: any[] }[] = [];
-  public labels: any[] = [];
-  public periods: any;
+  public subscription: Subscription = new Subscription(); // * Subscription
+  public endpoint: string = ''; //* Saves the endpoint get from the params.
+  public title: string = '' //* Used to save the title.
+  public completeForecast: WeatherData = new WeatherData() //* Used to save the complete forecast of the week.
+  public todayForecast: Forecast = new Forecast() //* Used to save and show the todays data.
+  public combinedTemperatures: combinedTemperatures[] = []; //* Used to save the combined day and night temperature.
+  public labels: string[] = []; //* used to save the labels that will be shown on the chart
 
   public lineChartData: ChartConfiguration['data'] = { datasets: [] }; // * Data that is going to be shown on the charts
   public lineChartType: ChartType = 'line'; // * Type of chart
@@ -34,7 +36,7 @@ export class WeatherComponent implements OnInit {
       datalabels: {
         anchor: 'end',
         align: 'top',
-        formatter: (value) => { return value  },
+        formatter: (value) => { return value + '°F' },
         color: '#444',
         font : {
           weight: 'normal',
@@ -64,57 +66,66 @@ export class WeatherComponent implements OnInit {
     },
 };
 
-
-
   constructor(private route: ActivatedRoute, private router: Router, private weatherService: WeatherAPIService) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
+    Chart.register(ChartDataLabels)
+    this.gettingIdFromParams()
+    this.requestingData()
+  }
+
+/**
+ * * Retrieves the value of the id parameter from the route
+ */
+  public gettingIdFromParams():void {
     this.route.params.subscribe(params => {
       this.endpoint = params['id'];
     });
     if (this.endpoint === 'TOP') this.title = 'Kansas'
     else this.title = 'District of Columbia'
-    Chart.register(ChartDataLabels)
-
-    this.requestingData()
   }
 
-  public async requestingData() {
-   this.weatherService.getWeatherData(this.endpoint).subscribe(data => {
-    this.completeForecast= data
-    this.initializeData()
-    this.setupChartData()
-  })
+  /**
+   * * Request to get weather data, initializes today's data, and sets up chart data.
+   */
+  public requestingData(): void {
 
+    this.subscription = this.weatherService.getWeatherData(this.endpoint).subscribe(data => {
+      this.completeForecast = data as WeatherData;
+      this.initializeTodaysData();
+      this.setupChartData();
+    });
   }
 
-  public initializeData() {
-    this.today = this.completeForecast.properties?.periods[0]
-
+/**
+ * * Initializes the todayForecast variable with the first element of the completeForecast.
+ */
+  public initializeTodaysData(): void {
+    this.todayForecast = this.completeForecast.properties?.periods[0]
   }
 
-  public navigateToCards() {
-      if (this.endpoint) {
-        this.router.navigate(['']);
-      }
-    }
 
+  /**
+   * * Organizes temperature data and then draws the chart
+   */
+  public setupChartData(): void {
+    this.combinedTemperatures = this.organizeTemperatures();
+    this.labels = this.combinedTemperatures.map(item => item.day);
+    const dayTemperatures = this.combinedTemperatures.map(item => item.temperatures[0]);
+    const nightTemperatures = this.combinedTemperatures.map(item => item.temperatures[1]);
+    this.drawChart(
+      dayTemperatures,
+      nightTemperatures,
+      )
+  }
 
-    public drawChart(dayTemperature:any[], nightTemperature:any[], relativeHumidity: any[]) {
+  /**
+   * * Creates a line chart with day and night temperature data.
+   */
+  public drawChart(dayTemperature:number[], nightTemperature:number[]): void {
       this.lineChartData = {
         labels: this.labels,
         datasets: [
-          {
-            label: 'Humidity (%)',
-            data: relativeHumidity,
-            borderColor: '#FF6484',
-            backgroundColor: '#FF6484',
-            pointBackgroundColor: '#FF6484',
-            pointStyle: 'rectRounded',
-            fill: false,
-            stepped: true,
-            pointRadius: 5,
-          },
           {
             label: 'Night Temperature',
             data: nightTemperature,
@@ -144,35 +155,40 @@ export class WeatherComponent implements OnInit {
           }
         }
       } as ChartData
+  }
 
-    }
 
-    public setupChartData() {
-      this.combinedTemperatures =this.organizeTemperatures();
-      console.log(this.combinedTemperatures)
-      console.log(this.completeForecast)
-      this.labels = this.combinedTemperatures.map(item => item.day);
-      const dayTemperatures = this.combinedTemperatures.map(item => item.temperatures[0]);
-      const nightTemperatures = this.combinedTemperatures.map(item => item.temperatures[1]);
-      const relativeHumidity = this.combinedTemperatures.map(item => item.relativeHumidity)
-      console.log(relativeHumidity)
-      this.drawChart(dayTemperatures, nightTemperatures, relativeHumidity)
-
-    }
-
-    public organizeTemperatures() {
+    /**
+     * * Organizes temperature data from a forecast into an array of objects.
+     */
+    public organizeTemperatures(): combinedTemperatures[] {
       const combinedTemperatures = [];
         for (let i = 0; i < this.completeForecast.properties.periods.length; i += 2) {
           const dayTemp = this.completeForecast.properties.periods[i];
           const nightTemp = this.completeForecast.properties.periods[i + 1];
           const relativeHumidity = this.completeForecast.properties.periods[i].relativeHumidity.value
-    combinedTemperatures.push({
-      day: dayTemp.name,
-      temperatures: [dayTemp.temperature, nightTemp.temperature],
-      relativeHumidity: relativeHumidity
-    });
-  }
-  return combinedTemperatures
+      combinedTemperatures.push({
+        day: dayTemp.name,
+        temperatures: [dayTemp.temperature, nightTemp.temperature],
+        relativeHumidity: relativeHumidity
+      });
     }
-}
+    return combinedTemperatures
+  }
 
+    /**
+     * * Navigates to the home page if the endpoint is defined.
+     */
+    public navigateToCards(): void {
+      if (this.endpoint) {
+        this.router.navigate(['']);
+      }
+    }
+
+    ngOnDestroy() {
+      if (this.subscription) {
+        this.subscription.unsubscribe();
+      }
+    }
+
+}
